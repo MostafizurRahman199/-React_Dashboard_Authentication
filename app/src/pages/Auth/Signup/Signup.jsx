@@ -1,4 +1,4 @@
-import { Grid, GridItem } from '@chakra-ui/react';
+import { Box, Flex, Grid, GridItem } from '@chakra-ui/react';
 import {
     Button,
     Card,
@@ -8,7 +8,7 @@ import {
     FormControl,
     FormErrorMessage,
     HStack,
-    Link,
+    
     LinkBox,
     Stack,
     Text,
@@ -17,6 +17,7 @@ import React from "react";
 import { Input } from "@chakra-ui/react";
 import {Formik, Form, Field} from "formik";
 import { object, string,  ref } from 'yup';
+import { Link } from 'react-router-dom';
 
 const signupValidationSchema = object({
   name: string().required("Name is required"),
@@ -180,7 +181,7 @@ export default function Signup() {
                         ({field, meta})=>(
 
                               <FormControl spacing="0px" py="0px" gap="0px" isInvalid={!!(meta.error &&    meta.touched)}>
-                                 <Checkbox colorScheme="purple" name="checkbox" {...field}>
+                                 <Checkbox colorScheme="purple" size="sm" name="checkbox" {...field}>
                                        I agree with{" "}
                                       <Link textColor="#5F00D9" color="purple" href="#"  fontSize="12px">
                                       Terms & Conditions.
@@ -196,15 +197,17 @@ export default function Signup() {
                 
         </HStack>
   
-              <Button bg="#5F00D9" type="submit"  _hover={{ bg:"#6f10ea"}}>Create Account</Button>
+              <Button width="100%" bg="#5F00D9" type="submit"  _hover={{ bg:"#6f10ea"}}>Create Account</Button>
   
               <Center>
-                <Text  fontSize="12px">
+               
+               <Text  fontSize="12px" >
                 Already have an account?{" "}
-                  <Link textColor="#5F00D9" color="purple" href="/signin">
-                  Log In
+                  <Link  to="/signin" >
+                    <Box as='b' textColor="#5F00D9"  _hover={{fontSize:"bold"}}>   Log in</Box>
                   </Link>
                 </Text>
+              
               </Center>
             </Stack>
         </Form>

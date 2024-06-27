@@ -7,6 +7,8 @@ import Signup from "./pages/Auth/Signup/Signup";
 import Signin from "./pages/Auth/Signin/Signin";
 import RegisterEmailVerify from "./pages/Auth/RegisterEmailVerify/RegisterEmailVerify";
 import RegisterSuccess from "./pages/Auth/RegisterSuccess/RegisterSuccess";
+import ForgetPassword from "./pages/Auth/ForgetPassword/ForgetPassword";
+import ForgotPasswordSent from "./pages/Auth/ForgotPasswordSent/ForgotPasswordSent";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -35,7 +37,15 @@ const router = createBrowserRouter([
   {
     path: "/register-email-success",
     element: <RegisterSuccess/>,
-  }
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgetPassword/>,
+  },
+  {
+    path: "/forgot-password-sent",
+    element: <ForgotPasswordSent />,
+  },
 ]);
 
 function App() {

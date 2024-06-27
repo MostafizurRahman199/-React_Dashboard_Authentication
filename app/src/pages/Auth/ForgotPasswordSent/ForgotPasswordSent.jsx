@@ -3,7 +3,7 @@ import React from 'react'
 import { MdEmail } from "react-icons/md";
 import { Link } from 'react-router-dom';
 
-export default function RegisterSuccess() {
+export default function ForgotPasswordSent() {
   return (
  <Container>
       <Center minH="100vh">
@@ -15,14 +15,13 @@ export default function RegisterSuccess() {
              
                 
                 <Stack alignItems="center" justify="center">
-                <Text fontSize="22px" fontWeight="medium">Successfully Registration</Text>
+                <Text fontSize="22px" fontWeight="medium">Successfully Sent</Text>
                 
-                <Text align="center" fontSize="14px" textColor="#797E82">Hurray! You have successfully created your account. Enter the app to explore all it’s features.</Text>
+                
+                <Text align="center" fontSize="14px" textColor="#797E82">We have sent instructions on how to reset your password to<Text as="b" textColor="black">jenny.wilson@gmail.com.</Text> Please follow the instructions from the email.</Text>  
                 </Stack>
 
-               <Stack width="100%">
-                   <Link to="/signin"> <Button  width="100%"  fontSize="14px" _hover={{ bg:"#6f10ea"}}>Enter the App</Button></Link>
-               </Stack>
+               
             </VStack>
         </Card>
       </Center>

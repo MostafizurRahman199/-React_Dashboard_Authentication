@@ -1,4 +1,4 @@
-import { Grid, GridItem } from '@chakra-ui/react';
+import { Box, Grid, GridItem } from '@chakra-ui/react';
 import {
     Button,
     Card,
@@ -8,8 +8,7 @@ import {
     FormControl,
     FormErrorMessage,
     HStack,
-    Link,
-    LinkBox,
+   
     Stack,
     Text,
 } from "@chakra-ui/react";
@@ -17,6 +16,7 @@ import React from "react";
 import { Input } from "@chakra-ui/react";
 import {Formik, Form, Field} from "formik";
 import { object, string,  ref } from 'yup';
+import { Link } from 'react-router-dom';
 
 const signupValidationSchema = object({
   name: string().required("Name is required"),
@@ -106,8 +106,8 @@ export default function Sigin() {
                                  Remember me
                                      
                                   </Checkbox>
-                                  <Link textColor="#5F00D9" fontWeight="medium"href="#"  fontSize="12px">
-                                      Forget Password?
+                                  <Link to="/forgot-password" >
+                                      <Box as="span"  _hover={{textColor:"#5F00D9"}} fontWeight="medium" fontSize="12px" >Forgot password?</Box>
                                       </Link>
                                  </HStack>
                                   <FormErrorMessage>{meta.error}</FormErrorMessage>
@@ -126,9 +126,12 @@ export default function Sigin() {
         </Form>
      }
         </Formik>
-              <Link textColor="#ffffff" fontWeight="bold"href="/signup"  w="full" bg="#5F00D9" p="2" textAlign="center" borderRadius="10px"  mt="3" textDecoration="none" _hover={{textDecoration:"none" , bg:"#6f10ea"}}>
+
+       
+              <Link to="/signup"   >
                                      
-                          Create Account
+                <Button  width="100%"  mt="3" bg="#5F00D9" type="submit"  _hover={{ bg:"#6f10ea"}}>Create Account
+                </Button>
               </Link>
   
         </Card>
