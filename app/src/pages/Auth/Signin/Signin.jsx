@@ -128,8 +128,8 @@ export default function Sigin() {
         </Formik>
               <Link textColor="#ffffff" fontWeight="bold"href="/signup"  w="full" bg="#5F00D9" p="2" textAlign="center" borderRadius="10px"  mt="3" textDecoration="none" _hover={{textDecoration:"none" , bg:"#6f10ea"}}>
                                      
-    Create Account
-                             </Link>
+                          Create Account
+              </Link>
   
         </Card>
       </Center>
