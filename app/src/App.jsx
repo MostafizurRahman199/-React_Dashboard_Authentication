@@ -11,6 +11,11 @@ import ForgetPassword from "./pages/Auth/ForgetPassword/ForgetPassword";
 import ForgotPasswordSent from "./pages/Auth/ForgotPasswordSent/ForgotPasswordSent";
 import ResetPassword from "./pages/Auth/ResetPassword/ResetPassword";
 import PasswordResetDone from "./pages/Auth/PasswordResetDone/PasswordResetDone";
+
+import { ReactQueryDevtools } from 'react-query/devtools'
+import { QueryClientProvider, QueryClient } from 'react-query';
+import ErrorBoundary from './ErrorBoundary'; // Import the ErrorBoundary component
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -37,7 +42,7 @@ const router = createBrowserRouter([
     element: <RegisterEmailVerify />,
   },
   {
-    path: "/register-email-success",
+    path: "/email-verify/:token",
     element: <RegisterSuccess/>,
   },
   {
@@ -59,10 +64,15 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const queryClient = new QueryClient();
+
   return (
-    <>
-      <RouterProvider router={router} />
-    </>
+    <QueryClientProvider client={queryClient}>
+      <ErrorBoundary> {/* Wrap RouterProvider with ErrorBoundary */}
+        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </ErrorBoundary>
+    </QueryClientProvider>
   );
 }
 

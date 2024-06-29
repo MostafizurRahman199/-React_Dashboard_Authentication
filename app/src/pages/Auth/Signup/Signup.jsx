@@ -1,23 +1,10 @@
-import { Box, Flex, Grid, GridItem } from '@chakra-ui/react';
-import {
-    Button,
-    Card,
-    Center,
-    Checkbox,
-    Container,
-    FormControl,
-    FormErrorMessage,
-    HStack,
-    
-    LinkBox,
-    Stack,
-    Text,
-} from "@chakra-ui/react";
-import React from "react";
-import { Input } from "@chakra-ui/react";
-import {Formik, Form, Field} from "formik";
-import { object, string,  ref } from 'yup';
-import { Link } from 'react-router-dom';
+import { Box, Center, Container, FormControl, FormErrorMessage, HStack, Stack, Text, useToast, Checkbox, Button, Card, Input } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Formik, Form, Field } from 'formik';
+import { object, string, ref } from 'yup';
+import { Link, useNavigate } from 'react-router-dom';
+import { useMutation } from 'react-query';
+import { signupUser } from '../../../api/query/userQuery';
 
 const signupValidationSchema = object({
   name: string().required("Name is required"),
@@ -27,192 +14,149 @@ const signupValidationSchema = object({
   repeatPassword: string().oneOf([ref("password"), null], "Passwords must match").required("Repeat Password is required"),
 });
 
-
-
 export default function Signup() {
- 
+
+  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  const { mutate, isLoading } = useMutation({
+    mutationKey: ["signup"],
+    mutationFn: signupUser,
+
+    onSuccess: (data) => {
+    if(email !== ""){
+      navigate("/register-email-verify", {
+        state:{email},
+      });
+    }
+    },
+    onError: (error) => {
+      toast({
+        title: "Signup Error",
+        description: error.message,
+        status: "error",
+      });
+    },
+  });
+
   return (
     <Container>
       <Center minH="100vh">
         <Card p="6" borderRadius="16px" w="408px">
           <Stack mb="1" spacing="0px" py="0px" gap="0px">
-          <Text fontSize="32px" fontWeight="medium">
-            Welcome to Crypto App
-          </Text>
-          <Text fontSize="14px" fontWeight="" textColor="#797E82">
-            Create a free account by filling data below.
-          </Text>
+            <Text fontSize="32px" fontWeight="medium">
+              Welcome to Crypto App
+            </Text>
+            <Text fontSize="14px" textColor="#797E82">
+              Create a free account by filling data below.
+            </Text>
           </Stack>
-        <Formik initialValues={{
-            name:"",
-            surname:"",
-            email:"",
-            password:"",
-            repeatPassword:"",
-        }}
-        onSubmit={(values)=>console.log(values)}
+          <Formik
+            initialValues={{
+              name: "",
+              surname: "",
+              email: "",
+              password: "",
+              repeatPassword: "",
+            }}
+            onSubmit={(values) => {
+              setEmail(values.email);
+              mutate({
+                firstName: values.name,
+                lastName: values.surname,
+                email: values.email,
+                password: values.password,
+              });
 
-        validationSchema={signupValidationSchema}
-        
-        >
-     {
-        ()=> <Form>
-        <Stack spacing="4" mt="2">
-              
+              if(email != ""){
+                navigate("/register-email-verify", {
+                  state:{email},
+                });
+              }
+          
 
-              <Grid templateColumns='repeat(2, 1fr)' gap={2} >
-              <GridItem colSpan={{
-                base: 2,
-                sm: 2,
-                md:1,
-                xl:1,
-                "2xl":1,
-                lg:1,
-              }}>
-              <Field name="name">
-                {
-                        ({field, meta})=>(
-                            <FormControl spacing="0px" py="0px" gap="0px" isInvalid={!!(meta.error && meta.touched)}>
-                                <Text  fontSize="14px" fontWeight="bold">Name</Text>
-                                <Input placeholder="James" size="sm" w="full" name="name"  {...field} />
-                                <FormErrorMessage>{meta.error}</FormErrorMessage>
-                            </FormControl>
-                        )
-                }
-
-            </Field>
-          </GridItem>
-            <GridItem colSpan={{
-                 base: 2,
-                 sm: 2,
-                 md:1,
-                 xl:1,
-                 "2xl":1,
-                 lg:1,}}  >
-              <Field name="surname">
-                {
-                        ({field, meta})=>(
-                            <FormControl spacing="0px" py="0px" gap="0px" isInvalid={!!(meta.error && meta.touched)}>
-                                <Text  fontSize="14px" fontWeight="bold" name="surname">Surname</Text>
-                                <Input placeholder="Arthur" size="sm" {...field}/>
-                                <FormErrorMessage>{meta.error}</FormErrorMessage>
-                            </FormControl>
-                        )
-                }
-
-            </Field>
-  </GridItem>
-  
-</Grid>
-
-            {/* <Field name="name">
-                {
-                        ({field, meta})=>(
-                            <FormControl spacing="0px" py="0px" gap="0px" isInvalid={!!(meta.error && meta.touched)}>
-                                <Text  fontSize="14px" fontWeight="bold">Name</Text>
-                                <Input placeholder="James" size="sm" name="name"  {...field} />
-                                <FormErrorMessage>{meta.error}</FormErrorMessage>
-                            </FormControl>
-                        )
-                }
-
-            </Field>
-
-            <Field name="surname">
-                {
-                        ({field, meta})=>(
-                            <FormControl spacing="0px" py="0px" gap="0px" isInvalid={!!(meta.error && meta.touched)}>
-                                <Text  fontSize="14px" fontWeight="bold" name="surname">Surname</Text>
-                                <Input placeholder="Arthur" size="sm" {...field}/>
-                                <FormErrorMessage>{meta.error}</FormErrorMessage>
-                            </FormControl>
-                        )
-                }
-
-            </Field> */}
-
-             
-
-              <Field name="email">
-                {
-                        ({field, meta})=>(
-                            <FormControl spacing="0px" py="0px" gap="0px" isInvalid={!!(meta.error && meta.touched)}>
-                                <Text fontSize="14px" fontWeight="bold" name="email">Email</Text>
-                                <Input type="email" placeholder="name@gmail.com" size="sm"  fontSize="14px" {...field} />
-                                <FormErrorMessage>{meta.error}</FormErrorMessage>
-                            </FormControl>
-                        )
-                }
-
-            </Field>
-              <Field name="password">
-                {
-                        ({field, meta})=>(
-                            <FormControl spacing="0px" py="0px" gap="0px" isInvalid={!!(meta.error && meta.touched)}>
-                                <Text fontSize="14px" fontWeight="bold" name="password">Password</Text>
-                                <Input type="password" placeholder=".........." size="sm"  fontSize="14px" _placeholder={{fontSize:'30px'}}  {...field}/>
-                                <FormErrorMessage>{meta.error}</FormErrorMessage>
-                            </FormControl>
-                        )
-                }
-
-            </Field>
-              <Field name="repeatPassword">
-                {
-                        ({field, meta})=>(
-                            <FormControl spacing="0px" py="0px" gap="0px" isInvalid={!!(meta.error && meta.touched)}>
-                                <Text   fontSize="14px" fontWeight="bold" name="repeatPassword">Repeat Password</Text>
-                                <Input type="password" placeholder=".........." size="sm"  fontSize="14px" _placeholder={{fontSize:'30px'}}  {...field}/>
-                                <FormErrorMessage>{meta.error}</FormErrorMessage>
-                            </FormControl>
-                        )
-                }
-
-            </Field>
-  
-            
-           
-             
-  
-              <HStack  fontSize="14px">
-
-              <Field name="checkbox">
-                {
-                        ({field, meta})=>(
-
-                              <FormControl spacing="0px" py="0px" gap="0px" isInvalid={!!(meta.error &&    meta.touched)}>
-                                 <Checkbox colorScheme="purple" size="sm" name="checkbox" {...field}>
-                                       I agree with{" "}
-                                      <Link textColor="#5F00D9" color="purple" href="#"  fontSize="12px">
-                                      Terms & Conditions.
-                                      </Link>
-                                  </Checkbox>
-                                  <FormErrorMessage>{meta.error}</FormErrorMessage>
-                              </FormControl>
-                        )
-                }
-
-              </Field>
-               
-                
-        </HStack>
-  
-              <Button width="100%" bg="#5F00D9" type="submit"  _hover={{ bg:"#6f10ea"}}>Create Account</Button>
-  
-              <Center>
-               
-               <Text  fontSize="12px" >
-                Already have an account?{" "}
-                  <Link  to="/signin" >
-                    <Box as='b' textColor="#5F00D9"  _hover={{fontSize:"bold"}}>   Log in</Box>
-                  </Link>
-                </Text>
-              
-              </Center>
-            </Stack>
-        </Form>
-     }
-        </Formik>
+            }}
+            validationSchema={signupValidationSchema}
+          >
+            {() => (
+              <Form>
+                <Stack spacing="4" mt="2">
+                  <HStack spacing={2}>
+                    <Field name="name">
+                      {({ field, meta }) => (
+                        <FormControl isInvalid={!!(meta.error && meta.touched)}>
+                          <Text fontSize="14px" fontWeight="bold">Name</Text>
+                          <Input placeholder="James" size="sm" {...field} />
+                          <FormErrorMessage>{meta.error}</FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                    <Field name="surname">
+                      {({ field, meta }) => (
+                        <FormControl isInvalid={!!(meta.error && meta.touched)}>
+                          <Text fontSize="14px" fontWeight="bold">Surname</Text>
+                          <Input placeholder="Arthur" size="sm" {...field} />
+                          <FormErrorMessage>{meta.error}</FormErrorMessage>
+                        </FormControl>
+                      )}
+                    </Field>
+                  </HStack>
+                  <Field name="email">
+                    {({ field, meta }) => (
+                      <FormControl isInvalid={!!(meta.error && meta.touched)}>
+                        <Text fontSize="14px" fontWeight="bold">Email</Text>
+                        <Input type="email" placeholder="name@gmail.com" size="sm" {...field} />
+                        <FormErrorMessage>{meta.error}</FormErrorMessage>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="password">
+                    {({ field, meta }) => (
+                      <FormControl isInvalid={!!(meta.error && meta.touched)}>
+                        <Text fontSize="14px" fontWeight="bold">Password</Text>
+                        <Input type="password" placeholder=".........." size="sm" {...field} />
+                        <FormErrorMessage>{meta.error}</FormErrorMessage>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="repeatPassword">
+                    {({ field, meta }) => (
+                      <FormControl isInvalid={!!(meta.error && meta.touched)}>
+                        <Text fontSize="14px" fontWeight="bold">Repeat Password</Text>
+                        <Input type="password" placeholder=".........." size="sm" {...field} />
+                        <FormErrorMessage>{meta.error}</FormErrorMessage>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="checkbox">
+                    {({ field, meta }) => (
+                      <FormControl isInvalid={!!(meta.error && meta.touched)}>
+                        <Checkbox colorScheme="purple" size="sm" {...field}>
+                          I agree with{" "}
+                          <Link to="#" style={{ color: "#5F00D9" }} fontSize="12px">
+                            Terms & Conditions.
+                          </Link>
+                        </Checkbox>
+                        <FormErrorMessage>{meta.error}</FormErrorMessage>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Button width="100%" bg="#5F00D9" type="submit" _hover={{ bg: "#6f10ea" }} isLoading={isLoading}>
+                    Create Account
+                  </Button>
+                  <Center>
+                    <Text fontSize="12px">
+                      Already have an account?{" "}
+                      <Link to="/signin">
+                        <Box as="b" textColor="#5F00D9">Log in</Box>
+                      </Link>
+                    </Text>
+                  </Center>
+                </Stack>
+              </Form>
+            )}
+          </Formik>
         </Card>
       </Center>
     </Container>
