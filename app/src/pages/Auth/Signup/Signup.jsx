@@ -25,10 +25,8 @@ export default function Signup() {
     mutationFn: signupUser,
 
     onSuccess: (data) => {
-    if(email !== ""){
-      navigate("/register-email-verify", {
-        state:{email},
-      });
+    if(email !==""){
+      navigate(`/register-email-verify/${email}`);
     }
     },
     onError: (error) => {

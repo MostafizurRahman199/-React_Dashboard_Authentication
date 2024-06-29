@@ -1,8 +1,8 @@
 import { Button, Card, Center, Container, HStack, Icon, Image, Spinner, Stack, Text, VStack, useToast } from '@chakra-ui/react'
 import React, { useEffect } from 'react'
 import { MdEmail } from "react-icons/md";
-import { useMutation, useQuery } from 'react-query';
-import { Link, useParams } from 'react-router-dom';
+import {  useQuery } from 'react-query';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { verifyEmailAddressSignup } from '../../../api/query/userQuery';
 
 export default function RegisterSuccess() {
@@ -11,23 +11,23 @@ const {token} = useParams();
 // console.log(params);
 
 const toast = useToast();
+const navigate = useNavigate();
 
-
-const { isSuccess, isLoading} =  useQuery({
-  mutationKey:["verify-email-token"],
-  mutationFn: ()=> verifyEmailAddressSignup({token}),
-  enabled:!!token,
-
-  onError: (error)=>{
-      toast({
-        title:"Signup Error",
-        description:error.message,
-        status:"error",
-      });
+const { data, isSuccess, isLoading } = useQuery({
+  queryKey: ["verify-email-token"],
+  queryFn: () => verifyEmailAddressSignup({ token }),
+  enabled: !!token,
+  
+  onError: (error) => {
+    toast({
+      title: "Signup Error",
+      description: error.message,
+      status: "error",
+    });
+    navigate("/signup");
   },
+});
 
-
- });
 
 if(isLoading) return <Center h="100vh"><Spinner></Spinner></Center>
 
