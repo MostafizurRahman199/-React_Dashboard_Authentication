@@ -45,9 +45,37 @@ export const sendVerificationMail = async ({ email}) => {
     throw new Error(errorMessage);
   }
 };
+export const sendForgotMail = async ({ email}) => {
+  try {
+    const { data } = await Axios.post(`${USER_URL}/forgot-password`, {email});
+    return data;
+  } catch (error) {
+    // Provide a default error message if error.response or error.response.data.message is undefined
+    const errorMessage =
+      error.response?.data?.message || "An error occurred while verifying email.";
+    throw new Error(errorMessage);
+  }
+};
+
+
+
 export const verifyEmailAddressSignup = async ({ token}) => {
   try {
-    const { data } = await Axios.post(`${USER_URL}/verfiy-user-mail`, {token});
+    const { data } = await Axios.post(`${USER_URL}/verify-user-mail`, {token});
+    return data;
+  } catch (error) {
+    // Provide a default error message if error.response or error.response.data.message is undefined
+    const errorMessage =
+      error.response?.data?.message || "An error occurred while verifying email.";
+    throw new Error(errorMessage);
+  }
+};
+
+
+export const verifyForgotToken = async ({ token, password}) => {
+  try {
+    const { data } = await Axios.post(`${USER_URL}/verify-forgot-mail`, 
+      {token, password});
     return data;
   } catch (error) {
     // Provide a default error message if error.response or error.response.data.message is undefined

@@ -15,57 +15,87 @@ import PasswordResetDone from "./pages/Auth/PasswordResetDone/PasswordResetDone"
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { QueryClientProvider, QueryClient } from 'react-query';
 import ErrorBoundary from './ErrorBoundary'; // Import the ErrorBoundary component
+import ProtectedRoute from "./components/Auth/ProtectedRoute";
+import AlreadySigninRoute from "./components/Auth/AlreadySigninRoute";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Dashboard />,
-  },
-  {
-    path: "/transactions",
-    element: <TransactionPage />,
-  },
-  {
-    path: "/support",
-    element: <Support />,
-  },
-  {
-    path: "/signup",
-    element: <Signup />,
-  },
-  {
-    path: "/signin",
-    element: <Signin />,
-  },
-  {
-    path: "/register-email-verify/:email",
-    element: <RegisterEmailVerify />,
-  },
-  {
-    path: "/email-verify/:token",
-    element: <RegisterSuccess/>,
-  },
-  {
-    path: "/forgot-password",
-    element: <ForgetPassword/>,
-  },
-  {
-    path: "/forgot-password-sent",
-    element: <ForgotPasswordSent />,
-  },
-  {
-    path: "/reset-password",
-    element: <ResetPassword />,
-  },
-  {
-    path: "/password-reset-done",
-    element: <PasswordResetDone />,
-  },
-]);
 
 function App() {
   const queryClient = new QueryClient();
-
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: (
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/transactions",
+      element: <TransactionPage />,
+    },
+    {
+      path: "/support",
+      element:(
+        <ProtectedRoute>
+           <Support />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/signup",
+      element: (
+        <AlreadySigninRoute>
+        <Signup />
+      </AlreadySigninRoute>
+      ),
+    },
+    {
+      path: "/signin",
+      element: <Signin />,
+    },
+    {
+      path: "/register-email-verify/:email",
+      element:(
+        <AlreadySigninRoute>
+           <RegisterEmailVerify />
+        </AlreadySigninRoute>
+      ),
+    },
+    {
+      path: "/email-verify/:token",
+      element: (
+        <AlreadySigninRoute>
+          <RegisterSuccess/>
+        </AlreadySigninRoute>
+      ),
+    },
+    {
+      path: "/forgot-password",
+      element: (<AlreadySigninRoute>
+        <ForgetPassword/>
+      </AlreadySigninRoute>),
+    },
+    {
+      path: "/forgot-success/:email",
+      element:(<AlreadySigninRoute>
+         <ForgotPasswordSent />
+      </AlreadySigninRoute>),
+    },
+    {
+      path: "/reset-password-verify/:token",
+      element: (<AlreadySigninRoute>
+        <ResetPassword />
+      </AlreadySigninRoute>),
+    },
+    {
+      path: "/password-reset-done",
+      element:(<AlreadySigninRoute>
+         <PasswordResetDone />
+      </AlreadySigninRoute>),
+    },
+  ]);
+  
   return (
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary> {/* Wrap RouterProvider with ErrorBoundary */}

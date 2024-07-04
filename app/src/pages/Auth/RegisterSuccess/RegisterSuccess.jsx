@@ -14,6 +14,7 @@ const toast = useToast();
 const navigate = useNavigate();
 
 const { data, isSuccess, isLoading } = useQuery({
+  
   queryKey: ["verify-email-token"],
   queryFn: () => verifyEmailAddressSignup({ token }),
   enabled: !!token,

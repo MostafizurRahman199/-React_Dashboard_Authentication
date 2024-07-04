@@ -2,7 +2,7 @@ import { Button, Card, Center, Container, HStack, Icon, Spinner, Stack, Text, VS
 import React, { useEffect } from 'react'
 import { MdEmail } from "react-icons/md";
 import { useMutation } from 'react-query';
-import { useLocation, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 import { sendVerificationMail } from '../../../api/query/userQuery';
 
 export default function RegisterEmailVerify() {

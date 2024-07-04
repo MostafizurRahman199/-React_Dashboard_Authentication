@@ -5,6 +5,7 @@ import { object, string } from 'yup';
 import { Link } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import { signinUser } from '../../../api/query/userQuery';
+import useAuth from '../../../hooks/useAuth';
 
 const signupValidationSchema = object({
   email: string().email("Invalid email").required("Email is required"),
@@ -13,11 +14,19 @@ const signupValidationSchema = object({
 
 export default function Sigin() {
   const toast = useToast();
+  const {login} = useAuth();
 
   const { mutate, isLoading } = useMutation({
     mutationKey: ["signin"],
     mutationFn: signinUser,
     onSuccess: (data) => {
+
+      const {token} = data;
+      if(token){
+          login(token);
+      }
+
+
       toast({
         title: "Signin Successful",
         description: "You have successfully signed in.",

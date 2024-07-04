@@ -1,4 +1,4 @@
-import { Grid, GridItem, Icon } from '@chakra-ui/react';
+import { Grid, GridItem, Icon, useToast } from '@chakra-ui/react';
 import {
     Button,
     Card,
@@ -12,12 +12,14 @@ import {
     Stack,
     Text,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "@chakra-ui/react";
 import {Formik, Form, Field} from "formik";
 import { object, string,  ref } from 'yup';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { GoArrowLeft } from "react-icons/go";
+import { sendForgotMail } from '../../../api/query/userQuery';
+import { useMutation } from 'react-query';
 const signupValidationSchema = object({
   name: string().required("Name is required"),
   surname: string().required("Surname is required"),
@@ -28,6 +30,39 @@ const signupValidationSchema = object({
 
 
 export default function ForgetPassword() {
+
+
+  const toast = useToast();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState();
+
+  const { mutate, isSuccess, isLoading } = useMutation({
+
+    mutationKey: ["forgot-email"],
+    mutationFn: sendForgotMail,
+  
+    onSettled: (data) => {
+      console.log(data);
+      navigate(`/forgot-success/${email}`);
+      toast({
+      title: "Send forgot mail Successful",
+        description: "Your mail have reached successfully",
+        status: "success",
+      });
+    },
+      
+
+    onError: (error) => {
+      toast({
+        title: "Forgot Error",
+        description: error.message,
+        status: "error",
+      });
+    },
+  
+   
+  });
+
  
   return (
     <Container>
@@ -49,7 +84,16 @@ export default function ForgetPassword() {
             password:"",
             repeatPassword:"",
         }}
-        onSubmit={(values)=>console.log(values)}
+
+        onSubmit={(values)=>{
+          
+          setEmail((prev) =>( prev = values.email));
+          console.log(values);
+          mutate({email: values.email})
+          
+
+        }
+      }
 
         validationSchema={signupValidationSchema}
         

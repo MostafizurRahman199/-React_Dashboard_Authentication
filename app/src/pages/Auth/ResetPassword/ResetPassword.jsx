@@ -1,4 +1,4 @@
-import { Box, Grid, GridItem } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Spinner, useToast } from '@chakra-ui/react';
 import {
     Button,
     Card,
@@ -16,7 +16,9 @@ import React from "react";
 import { Input } from "@chakra-ui/react";
 import {Formik, Form, Field} from "formik";
 import { object, string,  ref } from 'yup';
-import { Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useMutation } from 'react-query';
+import { verifyForgotToken } from '../../../api/query/userQuery';
 
 const signupValidationSchema = object({
   name: string().required("Name is required"),
@@ -29,6 +31,39 @@ const signupValidationSchema = object({
 
 
 export default function ResetPassword() {
+
+
+  const {token} = useParams();
+  // console.log(params);
+  
+  const toast = useToast();
+  const navigate = useNavigate();
+  
+  const { data, mutate, isSuccess, isLoading } = useMutation({
+    
+    mutationKey: ["verify-forgot-token"],
+    mutationFn: verifyForgotToken,
+    enabled: !!token,
+    
+    onError: (error) => {
+      toast({
+        title: "Signup Error",
+        description: error.message,
+        status: "error",
+      });
+      navigate("/signup");
+    },
+
+    onSettled: ()=>{
+      navigate("/reset-success")
+    }
+  });
+  
+  
+  if(isLoading) return <Center h="100vh"><Spinner></Spinner></Center>
+  
+
+
  
   return (
     <Container>
@@ -43,13 +78,13 @@ export default function ResetPassword() {
           </Text>
           </Stack>
         <Formik initialValues={{
-            name:"",
-            surname:"",
-            email:"",
+            
             password:"",
             repeatPassword:"",
         }}
-        onSubmit={(values)=>console.log(values)}
+        onSubmit={(values)=>{
+          mutate({token, password: values.password});
+        }}
 
         validationSchema={signupValidationSchema}
         
